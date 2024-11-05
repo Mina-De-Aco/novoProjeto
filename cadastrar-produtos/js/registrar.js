@@ -1,3 +1,21 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDvFEYjg3aTANQDyZv8o5wxN-JHd1iAKpo",
+    authDomain: "minadeaco-c2041.firebaseapp.com",
+    projectId: "minadeaco-c2041",
+    storageBucket: "minadeaco-c2041.appspot.com",
+    messagingSenderId: "1006944763688",
+    appId: "1:1006944763688:web:ed27ab5430d46296019a1d",
+    measurementId: "G-1XTP926TX1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 const produto = document.getElementById("produto");
 const valor = document.getElementById("valor");
 const quantidade = document.getElementById("quantidade");
