@@ -31,7 +31,7 @@ async function loginUser(email, senha) {
         }
 
     } catch (e) {
-        document.getElementById("errorMessage").textContent = "Usuário ou senha incorreto/a"
+        document.getElementById("errorMessageL").textContent = "Usuário ou senha incorreto/a"
         console.log(e)
     }
 }
@@ -40,7 +40,7 @@ async function registerUser(nome, email, senha, perfil) {
     try {
 
         if (senha.length <= 5) {
-            document.getElementById("errorMessage").textContent = "senha deve conter 6 caracteres ou mais"
+            document.getElementById("errorMessageR").textContent = "senha deve conter 6 caracteres ou mais"
             return
         }
         await createUserWithEmailAndPassword(auth, email, senha);
@@ -68,9 +68,9 @@ async function registerUser(nome, email, senha, perfil) {
     } catch (e) {
         let text = JSON.stringify(e);
         if (text.includes("email-already-in-use")) {
-            document.getElementById("errorMessage").textContent = "Email já cadastrado."
+            document.getElementById("errorMessageR").textContent = "Email já cadastrado."
         } else {
-            document.getElementById("errorMessage").textContent = "Erro ao cadastrar usuário, por favor tente novamente."
+            document.getElementById("errorMessageR").textContent = "Erro ao cadastrar usuário, por favor tente novamente."
             console.error("Erro ao adicionar documento:", e);
         }
     }
@@ -79,8 +79,6 @@ async function registerUser(nome, email, senha, perfil) {
 // Cadastro
 document.getElementById('cadastro-form').addEventListener('submit', function (e) {
     e.preventDefault();
-
-    console.log('a')
 
     const nome = document.getElementById('nomeCadastro').value;
     const email = document.getElementById('emailCadastro').value;

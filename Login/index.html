@@ -40,7 +40,7 @@
                         <input type="password" class="form-control" id="senhaLogin" placeholder="Digite sua senha"
                             required>
                     </div>
-                    <p id="errorMessage" class="text-danger text-center"></p>
+                    <p id="errorMessageL" class="text-danger text-center"></p>
                     <button type="submit" class="btn btn-primary">Entrar</button>
                 </form>
             </div>
@@ -65,12 +65,12 @@
                     <div class="mb-3">
                         <label for="perfilCadastro" class="form-label">Perfil</label>
                         <select class="form-control" id="perfilCadastro" required>
-                            <option value="">Escolha um perfil</option>
+                            <option value="" hidden>Escolha um perfil</option>
                             <option value="empresarial">Empresarial</option>
                             <option value="coletador">Coletor</option>
                             <option value="reciclavel">Reciclador</option>
                         </select>
-                        <p id="errorMessage" class="text-danger text-center"></p>
+                        <p id="errorMessageR" class="text-danger text-center"></p>
                     </div>
                     <button type="submit" class="btn btn-primary">Cadastrar</button>
                 </form>
