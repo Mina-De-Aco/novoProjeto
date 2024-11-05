@@ -1,11 +1,12 @@
 const produto = document.getElementById("produto");
 const valor = document.getElementById("valor");
 const quantidade = document.getElementById("quantidade");
-const botao = document.getElementById("btn-cadastrar");
+const form = document.getElementById("form");
 const listar_cadastros = document.getElementById("listar_cadastrados");
 const pErro = document.getElementById("errorMessage");
 
-botao.addEventListener("click", function () {
+form.addEventListener("submit", function (e) {
+    e.preventDefault()
     if (produto.value == "" || valor.value == "" || quantidade.value == "") {
         pErro.textContent = "Por favor, preencha todos os campos antes de continuar.";
         return

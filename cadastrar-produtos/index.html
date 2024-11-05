@@ -1,38 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <title>Cadastrar produto</title>
 </head>
+
 <body>
     <div class="container-fluid">
         <h1 class="display-4 text-center">Cadastrar Material</h1>
-        <div class="container shadow p-3 mb-5 bg-white rounded gap-2 d-flex flex-column justify-content-around bd-highlight p-2">
-            <div class="form-floating">
-                <select id="produto" class="form-control" placeholder="Nome do Produto" required>
-                    <option value="" hidden>Escolha um tipo de material</option>
-                    <option value="Ferro">Ferro</option>
-                    <option value="Papelão">Papelão</option>
-                    <option value="Cobre">Cobre</option>
-                    <option value="Alumínio">Alumínio</option>
-                </select>
-                <label for="produto">Material</label>
+        <form id="form">
+            <div
+                class="container shadow p-3 mb-5 bg-white rounded gap-2 d-flex flex-column justify-content-around bd-highlight p-2">
+                <div class="form-floating">
+                    <select id="produto" class="form-control" placeholder="Nome do Produto" required>
+                        <option value="" hidden>Escolha um tipo de material</option>
+                        <option value="Ferro">Ferro</option>
+                        <option value="Papelão">Papelão</option>
+                        <option value="Cobre">Cobre</option>
+                        <option value="Alumínio">Alumínio</option>
+                    </select>
+                    <label for="produto">Material</label>
+                </div>
+                <div class="form-floating">
+                    <input type="number" step="0.1" id="valor" class="form-control" placeholder="Valor" required>
+                    <label for="valor">Valor</label>
+                </div>
+                <div class="form-floating">
+                    <input type="number" step="0.1" id="quantidade" class="form-control" placeholder="Quantidade"
+                        required>
+                    <label for="quantidade">Quantidade Kg</label>
+                </div>
+                <p id="errorMessage" class="text-danger"></p>
+                <input type="submit" class="btn btn-primary" id="btn-cadastrar" style="background-color: #6ab99d;">Cadastrar</input>
             </div>
-            <div class="form-floating">
-                <input type="number" step="0.1" id="valor" class="form-control" placeholder="Valor" required>
-                <label for="valor">Valor</label>
-            </div>
-            <div class="form-floating">
-                <input type="number" step="0.1" id="quantidade" class="form-control" placeholder="Quantidade" required>
-                <label for="quantidade">Quantidade Kg</label>
-            </div>
-            <p id="errorMessage" class="text-danger"></p>
-            <button class="btn btn-primary" id="btn-cadastrar" type="button" style="background-color: #6ab99d;">Cadastrar</button>
-        </div>
-        <div class="container d-flex flex-column justify-content-center mt-5 bg-white p-2">
+        </form>
+
+
+        <div class="container d-flex flex-column justify-content-center mt-5 shadow p-3 bg-white p-2">
             <div class="d-flex justify-content-center">
                 <table class="table table-bordered">
                     <thead>
@@ -40,7 +49,7 @@
                             <th class="fw-bold title-th text-center">Material</th>
                             <th class="fw-bold title-th text-center">Valor</th>
                             <th class="fw-bold title-th text-center">Quantidade KG</th>
-                            <th class="fw-bold title-th text-center">Resultado</th>                            
+                            <th class="fw-bold title-th text-center">Resultado</th>
                         </tr>
                     </thead>
                     <tbody id="listar_cadastrados">
@@ -50,7 +59,10 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
     <script src="js/registrar.js"></script>
 </body>
+
 </html>
