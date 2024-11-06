@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+
 const firebaseConfig = {
     apiKey: "AIzaSyDvFEYjg3aTANQDyZv8o5wxN-JHd1iAKpo",
     authDomain: "minadeaco-c2041.firebaseapp.com",
@@ -38,44 +39,84 @@ async function loginUser(email, senha) {
 
 async function registerUser(nome, email, senha, perfil) {
     try {
-
         if (senha.length <= 5) {
             document.getElementById("errorMessageR").textContent = "senha deve conter 6 caracteres ou mais"
             return
         }
         await createUserWithEmailAndPassword(auth, email, senha);
         if (perfil == "reciclavel") {
-            const docRef = await addDoc(collection(db, "Fornecedor"), {
+            await addDoc(collection(db, "Fornecedor"), {
                 nome: nome,
                 email: email,
                 senha: senha
             });
         }
         else if (perfil == "coletador") {
-            const docRef = await addDoc(collection(db, "Coletor"), {
+            await addDoc(collection(db, "Coletor"), {
                 nome: nome,
                 email: email,
                 senha: senha
             });
         }
         else if (perfil == "empresarial") {
-            const docRef = await addDoc(collection(db, "Empresa"), {
-                nome: nome,
-                email: email,
-                senha: senha
-            });
+            criarEmpresa(nome, email, senha);
         }
     } catch (e) {
         let text = JSON.stringify(e);
         if (text.includes("email-already-in-use")) {
             document.getElementById("errorMessageR").textContent = "Email já cadastrado."
+            return
         } else {
             document.getElementById("errorMessageR").textContent = "Erro ao cadastrar usuário, por favor tente novamente."
             console.error("Erro ao adicionar documento:", e);
+            return
         }
     }
 }
 
+
+
+
+async function criarEmpresa(nome, email, senha) {
+    try {
+        const docRef = await addDoc(collection(db, "Inventário"), {});
+        const ordersCollectionRef = collection(docRef, "inv");
+
+        await addDoc(ordersCollectionRef, {
+            nome: "Ferro",
+            quantidade: 1,
+            valor: 1,
+        });
+
+        await addDoc(ordersCollectionRef, {
+            nome: "Papelão",
+            quantidade: 1,
+            valor: 1
+        })
+
+        await addDoc(ordersCollectionRef, {
+            nome: "Cobre",
+            quantidade: 1,
+            valor: 1
+        })
+
+        await addDoc(ordersCollectionRef, {
+            nome: "Alumínio",
+            quantidade: 1,
+            valor: 1
+        })
+
+        await addDoc(collection(db, "Empresa"), {
+            nome: nome,
+            email: email,
+            senha: senha,
+            idInventario: docRef.id
+        });
+
+    } catch (err) {
+        console.log(err)
+    }
+}
 // Cadastro
 document.getElementById('cadastro-form').addEventListener('submit', function (e) {
     e.preventDefault();

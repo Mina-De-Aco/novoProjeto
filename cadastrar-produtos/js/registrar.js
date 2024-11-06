@@ -21,7 +21,27 @@ const valor = document.getElementById("valor");
 const quantidade = document.getElementById("quantidade");
 const form = document.getElementById("form");
 const listar_cadastros = document.getElementById("listar_cadastrados");
+const listarMaterial = document.getElementById("produto");
 const pErro = document.getElementById("errorMessage");
+
+window.onload = function () {
+    listarMateriais();
+}
+
+async function listarMateriais() {
+    try {
+        let query = await getDocs(collection(db, "Inventário"));
+        query.forEach((doc) => {
+            let option = document.createElement("option");
+            option.value = doc.data();
+            option.textContent = doc.data();
+            listarMateriais.appendChild(option);
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 
 form.addEventListener("submit", function (e) {
     e.preventDefault()
