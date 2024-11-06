@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getFirestore, doc, collection, getDocs, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -27,13 +27,39 @@ const pErro = document.getElementById("errorMessage");
 const email = sessionStorage.getItem('email')
 const senha = sessionStorage.getItem('senha')
 
+let userId = ''
+
+console.log(email)
+
 window.onload = function () {
+    if (email == null) {
+        window.location.href = "../login/index.html"
+    }
     listarMateriais();
 }
 
 async function listarMateriais() {
     try {
-        
+        const colecRef = collection(db, "Empresa")
+        const querySnapshot = await getDocs(colecRef);
+
+        querySnapshot.forEach(doc => {
+            const dado = doc.data()
+            if(dado.email == email){
+                userId = dado.idInventario
+            }   
+        });
+
+        const docRef = doc(db, "Inventário", userId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const dados = docSnap.data();
+            const idInventario = dados.idInventario;
+        }
+        else {
+            console.log("docsnap não existe")
+        }
 
     } catch (e) {
         console.log(e);
