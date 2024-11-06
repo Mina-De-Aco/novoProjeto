@@ -22,13 +22,21 @@ let exists = false;
 async function loginUser(email, senha) {
     try {
         await signInWithEmailAndPassword(auth, email, senha);
-        const q = query(collection(db, "Coletor"), where("email", "==", email));
-        const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
+        sessionStorage.setItem('email', email)
+        sessionStorage.setItem('senha', senha)
+        
+        const qC = query(collection(db, "Coletor"), where("email", "==", email));
+        const qF = query(collection(db, "Coletor"), where("email", "==", email));
+        const queryCSnapshot = await getDocs(qC);
+        const queryFSnapshot = await getDocs(qF);
+
+        if (queryCSnapshot.empty && queryFSnapshot.empty) {
+            window.location.href = "../cadastrar-produtos/index.html"
+        } else if (!queryCSnapshot.empty) {
             window.location.href = "../EntreContato/index.html"
         } else {
-            window.location.href = "../cadastrar-produtos/index.html"
+            window.location.href = "../EntreContato/index.html"
         }
 
     } catch (e) {
@@ -73,9 +81,6 @@ async function registerUser(nome, email, senha, perfil) {
         }
     }
 }
-
-
-
 
 async function criarEmpresa(nome, email, senha) {
     try {
