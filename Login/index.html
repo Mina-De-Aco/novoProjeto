@@ -27,6 +27,7 @@
             </ul>
         </div>
         <div class="tab-content mt-4" id="myTabContent">
+            
             <!-- Login Tab -->
             <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
                 <form id="login-form">
@@ -45,8 +46,19 @@
                 </form>
             </div>
             <!-- Cadastro Tab -->
+             
             <div class="tab-pane fade" id="cadastro" role="tabpanel" aria-labelledby="cadastro-tab">
                 <form id="cadastro-form">
+                    <div class="mb-3">
+                        <label for="perfilCadastro" class="form-label">Perfil</label>
+                        <select class="form-control" id="perfilCadastro" required>
+                            <option value="" hidden>Escolha um perfil</option>
+                            <option value="empresarial">Empresarial</option>
+                            <option value="coletador">Coletor</option>
+                            <option value="reciclavel">Reciclador</option>
+                        </select>
+                        <p id="errorMessageR" class="text-danger text-center"></p>
+                    </div>
                     <div class="mb-3">
                         <label for="nomeCadastro" class="form-label">Nome</label>
                         <input type="text" class="form-control" id="nomeCadastro" placeholder="Digite seu nome"
@@ -62,16 +74,7 @@
                         <input type="password" class="form-control" id="senhaCadastro" placeholder="Digite sua senha"
                             required>
                     </div>
-                    <div class="mb-3">
-                        <label for="perfilCadastro" class="form-label">Perfil</label>
-                        <select class="form-control" id="perfilCadastro" required>
-                            <option value="" hidden>Escolha um perfil</option>
-                            <option value="empresarial">Empresarial</option>
-                            <option value="coletador">Coletor</option>
-                            <option value="reciclavel">Reciclador</option>
-                        </select>
-                        <p id="errorMessageR" class="text-danger text-center"></p>
-                    </div>
+                    
                     <button type="submit" class="btn btn-primary">Cadastrar</button>
                 </form>
             </div>
