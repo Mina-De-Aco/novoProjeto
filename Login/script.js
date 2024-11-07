@@ -32,7 +32,7 @@ async function loginUser(email, senha) {
         const queryFSnapshot = await getDocs(qF);
 
         if (queryCSnapshot.empty && queryFSnapshot.empty) {
-            window.location.href = "../cadastrar-produtos/index.html"
+            window.location.href = "../menu/menu.html"
         } else if (!queryCSnapshot.empty) {
             window.location.href = "../EntreContato/index.html"
         } else {
