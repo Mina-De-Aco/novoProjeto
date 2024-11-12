@@ -12,6 +12,11 @@ const firebaseConfig = {
     measurementId: "G-1XTP926TX1"
 };
 
+window.onload = function () {
+    sessionStorage.setItem("email", null);
+    sessionStorage.setItem("senha", null);
+}
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -32,7 +37,7 @@ async function loginUser(email, senha) {
         const queryFSnapshot = await getDocs(qF);
 
         if (queryCSnapshot.empty && queryFSnapshot.empty) {
-            window.location.href = "../menu/menu.html"
+            window.location.href = "../cadastrar-produtos/index.html"
         } else if (!queryCSnapshot.empty) {
             window.location.href = "../EntreContato/index.html"
         } else {
@@ -51,7 +56,6 @@ async function registerUser(nome, email, senha, perfil) {
             document.getElementById("errorMessageR").textContent = "senha deve conter 6 caracteres ou mais"
             return
         }
-        await createUserWithEmailAndPassword(auth, email, senha);
         if (perfil == "reciclavel") {
             await addDoc(collection(db, "Fornecedor"), {
                 nome: nome,
@@ -67,8 +71,10 @@ async function registerUser(nome, email, senha, perfil) {
             });
         }
         else if (perfil == "empresarial") {
-            criarEmpresa(nome, email, senha);
+            await criarEmpresa(nome, email, senha);
         }
+        await createUserWithEmailAndPassword(auth, email, senha);
+        window.location.reload();
     } catch (e) {
         let text = JSON.stringify(e);
         if (text.includes("email-already-in-use")) {
@@ -84,38 +90,39 @@ async function registerUser(nome, email, senha, perfil) {
 
 async function criarEmpresa(nome, email, senha) {
     try {
-        const docRef = await addDoc(collection(db, "Inventário"), {});
-        const ordersCollectionRef = collection(docRef, "inv");
+        const MatRef = await addDoc(collection(db, "Materiais"), {});
+        const MatCollectionRef = collection(MatRef, "inv");
+        
+        const InvRef = await addDoc(collection(db, "Inventário"), {});
+        const InvCollectionRef = collection(InvRef, "inv");
 
-        await addDoc(ordersCollectionRef, {
-            nome: "Ferro",
-            quantidade: 1,
-            valor: 1,
+        await addDoc(InvCollectionRef, {
+            id: "placeholder"
+        })
+
+        await addDoc(MatCollectionRef, {
+            id: "Ferro"
         });
 
-        await addDoc(ordersCollectionRef, {
-            nome: "Papelão",
-            quantidade: 1,
-            valor: 1
+        await addDoc(MatCollectionRef, {
+            id: "Papelão"
         })
 
-        await addDoc(ordersCollectionRef, {
-            nome: "Cobre",
-            quantidade: 1,
-            valor: 1
+        await addDoc(MatCollectionRef, {
+            id: "Cobre"
         })
 
-        await addDoc(ordersCollectionRef, {
-            nome: "Alumínio",
-            quantidade: 1,
-            valor: 1
+        await addDoc(MatCollectionRef, {
+            id: "Alumínio"
         })
 
         await addDoc(collection(db, "Empresa"), {
+            id: email,
             nome: nome,
             email: email,
             senha: senha,
-            idInventario: docRef.id
+            idMaterial: MatRef.id,
+            idInventario: InvRef.id
         });
 
     } catch (err) {
