@@ -182,6 +182,8 @@ document.getElementById("adicionarMaterial").addEventListener("click", function 
     popUpType = "adicionarMaterial";
 })
 
+
+
 document.getElementById("buttonPopup").addEventListener("click", function (e) {
     if (popUpType == "adicionarMaterial") {
         addMaterial();
