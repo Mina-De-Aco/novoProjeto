@@ -16,6 +16,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+//
+
 const produto = document.getElementById("produto");
 const valor = document.getElementById("valor");
 const quantidade = document.getElementById("quantidade");
