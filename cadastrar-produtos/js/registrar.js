@@ -175,11 +175,20 @@ closePopupBtn.addEventListener('click', function () {
     popup.style.display = 'none';
 });
 
-document.getElementById("adicionarMaterial").addEventListener("click", function (e) {
+function popUp() {
+    document.getElementById("popUpError").textContent = "";
+    document.getElementById("addMaterialInput").value = "";
     popup.style.display = 'block';
+}
+
+document.getElementById("adicionarMaterial").addEventListener("click", function (e) {
+    popUp();
+    popUpType = "adicionarMaterial";
+
     document.getElementById("buttonPopup").textContent = "Adicionar";
     document.getElementById("tituloPopup").textContent = "Nome do material:";
-    popUpType = "adicionarMaterial";
+
+    document.getElementById("selectpopUp").display = none;
 })
 
 
@@ -188,7 +197,7 @@ document.getElementById("buttonPopup").addEventListener("click", function (e) {
     if (popUpType == "adicionarMaterial") {
         addMaterial();
     }
-    else if(popUpType == "removerMaterial"){
+    else if (popUpType == "removerMaterial") {
         removeMaterial();
     }
 })
@@ -196,22 +205,38 @@ document.getElementById("buttonPopup").addEventListener("click", function (e) {
 async function addMaterial() {
     const materialInput = document.getElementById("addMaterialInput").value;
 
-    if(materialInput == ''){
+    if (materialInput == '') {
         document.getElementById("popUpError").textContent = "O campo precisa conter texto. Por favor, feche e tente novamente.";
+        return
     }
 
     const MatdocRef = doc(db, "Materiais", idMaterial);
     const MatcollectionRef = collection(MatdocRef, "inv");
-    await addDoc(MatcollectionRef, {
-        id: materialInput
-    })
-    listarMateriais();
 
-    popup.style.display = "none";
+    const qMat = await getDocs(MatcollectionRef);
+
+    let alreadyExists = false
+
+    qMat.forEach(doc => {
+        if (doc.data().id.toLowerCase() == materialInput.toLowerCase()) {
+            document.getElementById("popUpError").textContent = "Material já cadastrado.";
+            alreadyExists = true;
+            return
+        }
+    })
+
+    if (alreadyExists == false) {
+        await addDoc(MatcollectionRef, {
+            id: materialInput
+        })
+        listarMateriais();
+
+        popup.style.display = "none";
+    }
 }
 
-function removeMaterial(){
+function removeMaterial() {
     const materialInput = document.getElementById("addMaterialInput").value;
-    
+
 
 }

@@ -12,15 +12,19 @@
 
 <body>
     <div id="popup" class="popup">
-        <div class="popup-content d-flex flex-column">
-            <div id="popupContent" class="d-flex flex-column">
-                <div class="d-flex flex-row justify-content-between">
-                <h2 id="tituloPopup"></h2>
+        <div class="popup-content d-flex flex-column ">
+            <div id="popupContent" class="d-flex flex-column justify-content-between">
+                <div class="d-flex flex-row justify-content-between"">
+                    <h2 id="tituloPopup"></h2>
                 <span id="closePopupBtn" class="close-btn">&times;</span>
+                </div>
                 <input type="text" name="" id="addMaterialInput" class="inputPopup">
+                <select name="" id="selectpopUp">
+                    <option value="" hidden>Selecione um material</option>
+                </select>
+                <p id="popUpError" class="text-danger"></p>
                 <button id="buttonPopup" class="buttonPopup">Adicionar</button></div>
             </div>
-            <p id="popUpError" class="text-danger"></p>
         </div>
     </div>
 
