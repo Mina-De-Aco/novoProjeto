@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getFirestore, doc, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getFirestore, doc, collection, getDocs, addDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -178,6 +178,7 @@ closePopupBtn.addEventListener('click', function () {
 function popUp() {
     document.getElementById("popUpError").textContent = "";
     document.getElementById("addMaterialInput").value = "";
+
     popup.style.display = 'block';
 }
 
@@ -186,11 +187,24 @@ document.getElementById("adicionarMaterial").addEventListener("click", function 
     popUpType = "adicionarMaterial";
 
     document.getElementById("buttonPopup").textContent = "Adicionar";
-    document.getElementById("tituloPopup").textContent = "Nome do material:";
+    document.getElementById("tituloPopup").textContent = "Adicionar Material:";
 
-    document.getElementById("selectpopUp").display = none;
+    document.getElementById("addMaterialInput").style.display = "block";
+    document.getElementById("selectPopUp").style.display = "none";
 })
 
+document.getElementById("removerMaterial").addEventListener("click", function (e) {
+    popUp();
+    popUpType = "removerMaterial";
+
+    document.getElementById("buttonPopup").textContent = "Remover";
+    document.getElementById("tituloPopup").textContent = "Remover Material:";
+
+    document.getElementById("addMaterialInput").style.display = "none";
+    document.getElementById("selectPopUp").style.display = "block";
+
+    listarSelectPopUp();
+})
 
 
 document.getElementById("buttonPopup").addEventListener("click", function (e) {
@@ -235,8 +249,46 @@ async function addMaterial() {
     }
 }
 
-function removeMaterial() {
-    const materialInput = document.getElementById("addMaterialInput").value;
+async function listarSelectPopUp() {
+    const selectPopUp = document.getElementById("selectPopUp");
+    selectPopUp.innerHTML = "";
 
+    const MatdocRef = doc(db, "Materiais", idMaterial);
+    const MatcollectionRef = collection(MatdocRef, "inv");
 
+    const qMat = await getDocs(MatcollectionRef);
+
+    qMat.forEach(doc => {
+        const optMaterial = document.createElement("option");
+        optMaterial.value = doc.data().id;
+        optMaterial.textContent = doc.data().id;
+        selectPopUp.appendChild(optMaterial);
+    })
+}
+
+async function removeMaterial() {
+    const materialInput = document.getElementById("selectPopUp").value;
+
+    if (materialInput.value == "") {
+        document.getElementById("popUpError").textContent = "Por favor, selecione uma opção.";
+        return
+    }
+
+    const MatdocRef = doc(db, "Materiais", idMaterial);
+    const MatcollectionRef = collection(MatdocRef, "inv");
+
+    let materialId = "";
+
+    const qMat = await getDocs(MatcollectionRef);
+    qMat.forEach(doc => {
+        if (doc.data().id == materialInput) {
+            materialId = doc.id;
+        }
+    })
+
+    const docRef = doc(db, "Materiais/" + idMaterial + "/inv/" + materialId);
+    await deleteDoc(docRef);
+
+    popup.style.display = "none";
+    listarMateriais();
 }
