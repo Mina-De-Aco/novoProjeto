@@ -41,6 +41,8 @@ window.onload = function () {
 }
 
 async function listarMateriais() {
+    produtoSelect.innerHTML = "";
+
     try {
         const colecRef = collection(db, "Empresa");
         const querySnapshot = await getDocs(colecRef);
@@ -66,7 +68,6 @@ async function listarMateriais() {
 
     } catch (e) {
         pErro.textContent = "Falha em listar os materiais. Por favor tente novamente.";
-        console.log(e)
     }
 }
 
@@ -84,7 +85,6 @@ async function listarInventario() {
     const MatdocRef = doc(db, "Inventário", idInventario);
     const MatcollectionRef = collection(MatdocRef, "inv");
     const qI = await getDocs(MatcollectionRef);
-    console.log(qI)
 
     listar_cadastros.innerHTML = '';
     qI.forEach(doc => {
@@ -101,15 +101,15 @@ async function listarInventario() {
 
             let li_valor = document.createElement("th");
             li_valor.classList.add("fw-bold", "title-th", "text-center");
-            li_valor.textContent = valorProduto;
+            li_valor.textContent = "R$" + valorProduto;
 
             let li_quantidade = document.createElement("th");
             li_quantidade.classList.add("fw-bold", "title-th", "text-center");
-            li_quantidade.textContent = quantidadeProduto;
+            li_quantidade.textContent = quantidadeProduto + "Kg";
 
             let li_valor_final = document.createElement("th");
             li_valor_final.classList.add("fw-bold", "title-th", "text-center");
-            li_valor_final.textContent = valorFinal;
+            li_valor_final.textContent = "R$" + valorFinal;
 
             let li_remover = document.createElement("th");
             li_remover.classList.add("btnRemover");
@@ -162,4 +162,54 @@ async function adicionarProduto() {
         quantidade: quantidade.value
     })
     listarInventario();
+}
+
+// Referências aos elementos
+const popup = document.getElementById('popup');
+const closePopupBtn = document.getElementById('closePopupBtn');
+
+let popUpType = '';
+
+// Função para fechar o pop-up
+closePopupBtn.addEventListener('click', function () {
+    popup.style.display = 'none';
+});
+
+document.getElementById("adicionarMaterial").addEventListener("click", function (e) {
+    popup.style.display = 'block';
+    document.getElementById("buttonPopup").textContent = "Adicionar";
+    document.getElementById("tituloPopup").textContent = "Nome do material:";
+    popUpType = "adicionarMaterial";
+})
+
+document.getElementById("buttonPopup").addEventListener("click", function (e) {
+    if (popUpType == "adicionarMaterial") {
+        addMaterial();
+    }
+    else if(popUpType == "removerMaterial"){
+        removeMaterial();
+    }
+})
+
+async function addMaterial() {
+    const materialInput = document.getElementById("addMaterialInput").value;
+
+    if(materialInput == ''){
+        document.getElementById("popUpError").textContent = "O campo precisa conter texto. Por favor, feche e tente novamente.";
+    }
+
+    const MatdocRef = doc(db, "Materiais", idMaterial);
+    const MatcollectionRef = collection(MatdocRef, "inv");
+    await addDoc(MatcollectionRef, {
+        id: materialInput
+    })
+    listarMateriais();
+
+    popup.style.display = "none";
+}
+
+function removeMaterial(){
+    const materialInput = document.getElementById("addMaterialInput").value;
+    
+
 }
