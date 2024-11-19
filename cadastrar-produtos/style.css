@@ -58,8 +58,25 @@ input[type="text"] {
   color: #fff;
 }
 
-.btnRemover {
-  display: none;
+.divFinal {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.divButtons{
+  margin: 0;
+  justify-self: end;
+}
+
+.divFinal th{
+  text-align: center;
+  justify-self: center;
+} 
+
+.btnEditar, .btnRemover{
+  width: 5vh;
+  height: 5vh;
 }
 
 button {
