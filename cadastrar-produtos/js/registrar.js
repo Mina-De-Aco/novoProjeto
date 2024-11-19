@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getFirestore, doc, collection, getDocs, addDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+import { getFirestore, doc, collection, getDocs, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDvFEYjg3aTANQDyZv8o5wxN-JHd1iAKpo",
@@ -189,7 +189,7 @@ document.getElementById("adicionarMaterial").addEventListener("click", function 
     popUpType = "adicionarMaterial";
 
     document.getElementById("buttonPopup").textContent = "Adicionar";
-    document.getElementById("tituloPopup").textContent = "Adicionar Material:";
+    document.getElementById("tituloPopup").textContent = "Adicionar Material";
 
     document.getElementById("addMaterialInput").style.display = "block";
     document.getElementById("selectPopUp").style.display = "none";
@@ -200,7 +200,7 @@ document.getElementById("removerMaterial").addEventListener("click", function (e
     popUpType = "removerMaterial";
 
     document.getElementById("buttonPopup").textContent = "Remover";
-    document.getElementById("tituloPopup").textContent = "Remover Material:";
+    document.getElementById("tituloPopup").textContent = "Remover Material";
 
     document.getElementById("addMaterialInput").style.display = "none";
     document.getElementById("selectPopUp").style.display = "block";
@@ -208,6 +208,18 @@ document.getElementById("removerMaterial").addEventListener("click", function (e
     listarSelectPopUp();
 })
 
+document.getElementById("editarMaterial").addEventListener("click", function (e) {
+    popUp();
+    popUpType = "editarMaterial";
+
+    document.getElementById("buttonPopup").textContent = "Editar";
+    document.getElementById("tituloPopup").textContent = "Editar Material";
+
+    document.getElementById("addMaterialInput").style.display = "block";
+    document.getElementById("selectPopUp").style.display = "block";
+
+    listarSelectPopUp();
+})
 
 document.getElementById("buttonPopup").addEventListener("click", function (e) {
     if (popUpType == "adicionarMaterial") {
@@ -215,6 +227,9 @@ document.getElementById("buttonPopup").addEventListener("click", function (e) {
     }
     else if (popUpType == "removerMaterial") {
         removeMaterial();
+    }
+    else if (popUpType == "editarMaterial") {
+        editMaterial();
     }
 })
 
@@ -290,6 +305,37 @@ async function removeMaterial() {
 
     const docRef = doc(db, "Materiais/" + idMaterial + "/inv/" + materialId);
     await deleteDoc(docRef);
+
+    popup.style.display = "none";
+    listarMateriais();
+}
+
+async function editMaterial() {
+    const materialInput = document.getElementById("addMaterialInput").value;
+    const materialSelect = document.getElementById("selectPopUp").value;
+
+    if (materialInput == "" || materialSelect == "") {
+        document.getElementById("popUpError").textContent = "Os campos precisam estar preenchidos.";
+        return
+    }
+
+    const MatdocRef = doc(db, "Materiais", idMaterial);
+    const MatcollectionRef = collection(MatdocRef, "inv");
+
+    let materialId = "";
+
+    const qMat = await getDocs(MatcollectionRef);
+    qMat.forEach(doc => {
+        if (doc.data().id == materialSelect) {
+            materialId = doc.id;
+        }
+    })
+
+    const docRef = doc(db, "Materiais/" + idMaterial + "/inv/" + materialId);
+
+    await updateDoc(docRef, {
+        id: materialInput
+    });
 
     popup.style.display = "none";
     listarMateriais();

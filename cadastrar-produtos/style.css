@@ -100,7 +100,8 @@ button {
 
 .inputPopup {
   align-items: left;
-  margin: 1vh;
+  margin-top: 1vh;
+  width: 100%;
 }
 
 .buttonPopup {
