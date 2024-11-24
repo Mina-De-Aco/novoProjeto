@@ -12,9 +12,8 @@ const firebaseConfig = {
     measurementId: "G-1XTP926TX1"
 };
 
-window.onload = function () {
-    sessionStorage.setItem("email", null);
-    sessionStorage.setItem("senha", null);
+if (localStorage.getItem("email") != null || sessionStorage.getItem("email") != null) {
+    testLogin();
 }
 
 // Initialize Firebase
@@ -28,25 +27,57 @@ async function loginUser(email, senha) {
     try {
         await signInWithEmailAndPassword(auth, email, senha);
 
-        sessionStorage.setItem('email', email)
-        sessionStorage.setItem('senha', senha)
-        
+
+        if (document.getElementById("conectCB").value == true) {
+            localStorage.setItem("email", email);
+            localStorage.setItem("senha", senha);
+        }
+        else {
+            sessionStorage.setItem('email', email);
+            sessionStorage.setItem('senha', senha);
+        }
+
         const qC = query(collection(db, "Coletor"), where("email", "==", email));
         const qF = query(collection(db, "Coletor"), where("email", "==", email));
         const queryCSnapshot = await getDocs(qC);
         const queryFSnapshot = await getDocs(qF);
 
+        console.log(document.getElementById("connectCB").value);
         if (queryCSnapshot.empty && queryFSnapshot.empty) {
             window.location.href = "../cadastrar-produtos/index.html"
         } else if (!queryCSnapshot.empty) {
-            window.location.href = "../EntreContato/index.html"
+            window.location.href = "../PainelColetor/index.html"
         } else {
             window.location.href = "../EntreContato/index.html"
         }
 
+
     } catch (e) {
         document.getElementById("errorMessageL").textContent = "Usuário ou senha incorreto/a"
         console.log(e)
+    }
+}
+
+async function testLogin() {
+    const email = "";
+    if (localStorage.getItem("email") == null) {
+        email = sessionStorage.getItem("email");
+    }
+    else {
+        email = localStorage.getItem("email");F
+    }
+
+    const qC = query(collection(db, "Coletor"), where("email", "==", email));
+    const qF = query(collection(db, "Coletor"), where("email", "==", email));
+    const queryCSnapshot = await getDocs(qC);
+    const queryFSnapshot = await getDocs(qF);
+
+    if (queryCSnapshot.empty && queryFSnapshot.empty) {
+        window.location.href = "../cadastrar-produtos/index.html"
+    } else if (!queryCSnapshot.empty) {
+        window.location.href = "../EntreContato/index.html"
+    } else {
+        window.location.href = "../PainelColetor/index.html"
     }
 }
 
@@ -92,7 +123,7 @@ async function criarEmpresa(nome, email, senha) {
     try {
         const MatRef = await addDoc(collection(db, "Materiais"), {});
         const MatCollectionRef = collection(MatRef, "inv");
-        
+
         const InvRef = await addDoc(collection(db, "Inventário"), {});
         const InvCollectionRef = collection(InvRef, "inv");
 

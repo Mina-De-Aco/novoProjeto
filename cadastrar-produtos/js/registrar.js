@@ -25,8 +25,16 @@ const form = document.getElementById("form");
 const listar_cadastros = document.getElementById("listar_cadastrados");
 const pErro = document.getElementById("errorMessage");
 
-const email = sessionStorage.getItem('email')
-const senha = sessionStorage.getItem('senha')
+const email = '' 
+const senha = ''
+
+if(localStorage.getItem('email') == null){
+    email = sessionStorage.getItem('email');
+    senha = sessionStorage.getItem('senha');
+}else{
+    email = localStorage.getItem('email');
+    senha = localStorage.getItem('senha');
+}
 
 let idMaterial = ''
 let idInventario = ''
