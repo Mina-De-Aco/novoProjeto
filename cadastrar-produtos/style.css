@@ -70,6 +70,9 @@ input[type="text"] {
 }
 
 .divFinal th{
+  position: relative;
+  left: 45%;
+  align-self: center;
   text-align: center;
   justify-self: center;
 } 
@@ -132,4 +135,19 @@ button {
   border: 1px solid #ccc;
   padding: 10px;
   font-size: 16px;
+}
+
+.tr input{
+  border: none;
+  width: 10%;
+}
+
+.divEditInputs select{
+  text-align: center;
+  width: 35%;
+}
+
+.divEditInputs input{
+  text-align: center;
+  max-width: 20%;
 }

@@ -23,7 +23,6 @@ const valor = document.getElementById("valor");
 const quantidade = document.getElementById("quantidade");
 const form = document.getElementById("form");
 const listar_cadastros = document.getElementById("listar_cadastrados");
-const produtoSelect = document.getElementById("produto");
 const pErro = document.getElementById("errorMessage");
 
 const email = sessionStorage.getItem('email')
@@ -31,45 +30,15 @@ const senha = sessionStorage.getItem('senha')
 
 let idMaterial = ''
 let idInventario = ''
+let prodId = ''
 
 window.onload = function () {
     if (email == null) {
         window.location.href = "../login/index.html"
     }
     else {
-        listarMateriais();
+        listarSelectMaterial(produto);
         listarInventario();
-    }
-}
-
-async function listarMateriais() {
-    produtoSelect.innerHTML = "";
-
-    try {
-        const colecRef = collection(db, "Empresa");
-        const querySnapshot = await getDocs(colecRef);
-
-        querySnapshot.forEach(doc => {
-            const dado = doc.data();
-            if (dado.email == email) {
-                idMaterial = dado.idMaterial;
-            }
-        });
-
-        const MatdocRef = doc(db, "Materiais", idMaterial);
-        const MatcollectionRef = collection(MatdocRef, "inv");
-        const qM = await getDocs(MatcollectionRef);
-
-        qM.forEach(doc => {
-            const idProduto = doc.data().id;
-            const optionMaterial = document.createElement("option");
-            optionMaterial.value = idProduto;
-            optionMaterial.textContent = idProduto;
-            produtoSelect.appendChild(optionMaterial);
-        });
-
-    } catch (e) {
-        pErro.textContent = "Falha em listar os materiais. Por favor tente novamente.";
     }
 }
 
@@ -157,6 +126,30 @@ async function listarInventario() {
                 btn_remover.remove();
             });
 
+            btn_editar.addEventListener("click", function () {
+                popUp(true);
+                prodId = idProduto;
+
+                listarSelectMaterial(document.getElementById("EditSelect"), nomeProduto);
+
+                let inputs = document.getElementsByClassName("editInputs");
+                for (let index = 0; index < inputs.length; index++) {
+                    inputs[index].style.display = "block";
+                }
+
+                document.getElementById("valorInput").value = "R$" + valorProduto;
+                document.getElementById("qntInput").value = quantidadeProduto + "Kg";
+
+                popUpType = "editarProduto";
+
+                document.getElementById("buttonPopup").textContent = "Editar";
+                document.getElementById("tituloPopup").textContent = "Editar Produto";
+
+                document.getElementById("addMaterialInput").style.display = "none";
+                document.getElementById("selectPopUp").style.display = "none";
+            });
+
+
             btn_remover.appendChild(svg);
 
             tr.appendChild(li_produto);
@@ -168,7 +161,7 @@ async function listarInventario() {
 
             divFinal.appendChild(li_valor_final);
             divFinal.appendChild(divButtons);
-            
+
             tr.appendChild(divFinal);
             listar_cadastros.appendChild(tr);
         }
@@ -178,6 +171,25 @@ async function listarInventario() {
 function removeProduto(produtoId) {
     const docRef = doc(db, "Inventário/" + idInventario + "/inv/" + produtoId);
     deleteDoc(docRef);
+}
+
+async function editProduto() {
+    const docRef = doc(db, "Inventário/" + idInventario + "/inv/" + prodId);
+    const nomeProd = document.getElementById("EditSelect").value;
+    let valorProd = document.getElementById("valorInput").value;
+    let qntProd = document.getElementById("qntInput").value;
+    
+    valorProd = valorProd.replace("R$", "");
+    qntProd = qntProd.replace("Kg", "");
+
+    await updateDoc(docRef, {
+        id: nomeProd,
+        valor: valorProd,
+        quantidade: qntProd
+    });
+
+    popup.style.display = "none";
+    listarInventario();
 }
 
 form.addEventListener("submit", function (e) {
@@ -209,15 +221,22 @@ closePopupBtn.addEventListener('click', function () {
     popup.style.display = 'none';
 });
 
-function popUp() {
+function popUp(isEditing) {
     document.getElementById("popUpError").textContent = "";
     document.getElementById("addMaterialInput").value = "";
+
+    if (!isEditing) {
+        let inputs = document.getElementsByClassName("editInputs");
+        for (let index = 0; index < inputs.length; index++) {
+            inputs[index].style.display = "none";
+        }
+    }
 
     popup.style.display = 'block';
 }
 
 document.getElementById("adicionarMaterial").addEventListener("click", function (e) {
-    popUp();
+    popUp(false);
     popUpType = "adicionarMaterial";
 
     document.getElementById("buttonPopup").textContent = "Adicionar";
@@ -228,7 +247,7 @@ document.getElementById("adicionarMaterial").addEventListener("click", function 
 })
 
 document.getElementById("removerMaterial").addEventListener("click", function (e) {
-    popUp();
+    popUp(false);
     popUpType = "removerMaterial";
 
     document.getElementById("buttonPopup").textContent = "Remover";
@@ -237,11 +256,11 @@ document.getElementById("removerMaterial").addEventListener("click", function (e
     document.getElementById("addMaterialInput").style.display = "none";
     document.getElementById("selectPopUp").style.display = "block";
 
-    listarSelectPopUp();
+    listarSelectMaterial(document.getElementById("selectPopUp"));
 })
 
 document.getElementById("editarMaterial").addEventListener("click", function (e) {
-    popUp();
+    popUp(false);
     popUpType = "editarMaterial";
 
     document.getElementById("buttonPopup").textContent = "Editar";
@@ -250,7 +269,7 @@ document.getElementById("editarMaterial").addEventListener("click", function (e)
     document.getElementById("addMaterialInput").style.display = "block";
     document.getElementById("selectPopUp").style.display = "block";
 
-    listarSelectPopUp();
+    listarSelectMaterial(document.getElementById("selectPopUp"));
 })
 
 document.getElementById("buttonPopup").addEventListener("click", function (e) {
@@ -262,6 +281,9 @@ document.getElementById("buttonPopup").addEventListener("click", function (e) {
     }
     else if (popUpType == "editarMaterial") {
         editMaterial();
+    }
+    else if (popUpType == "editarProduto") {
+        editProduto();
     }
 })
 
@@ -292,27 +314,46 @@ async function addMaterial() {
         await addDoc(MatcollectionRef, {
             id: materialInput
         })
-        listarMateriais();
+        listarSelectMaterial(documnet.getElementById("selectPopUp"));
 
         popup.style.display = "none";
     }
 }
 
-async function listarSelectPopUp() {
-    const selectPopUp = document.getElementById("selectPopUp");
-    selectPopUp.innerHTML = "";
+async function listarSelectMaterial(select, selected) {
+    select.innerHTML = "";
 
-    const MatdocRef = doc(db, "Materiais", idMaterial);
-    const MatcollectionRef = collection(MatdocRef, "inv");
+    try {
+        const colecRef = collection(db, "Empresa");
+        const querySnapshot = await getDocs(colecRef);
 
-    const qMat = await getDocs(MatcollectionRef);
+        querySnapshot.forEach(doc => {
+            const dado = doc.data();
+            if (dado.email == email) {
+                idMaterial = dado.idMaterial;
+            }
+        });
 
-    qMat.forEach(doc => {
-        const optMaterial = document.createElement("option");
-        optMaterial.value = doc.data().id;
-        optMaterial.textContent = doc.data().id;
-        selectPopUp.appendChild(optMaterial);
-    })
+        const MatdocRef = doc(db, "Materiais", idMaterial);
+        const MatcollectionRef = collection(MatdocRef, "inv");
+        const qM = await getDocs(MatcollectionRef);
+
+        qM.forEach(doc => {
+            const idProduto = doc.data().id;
+            const optionMaterial = document.createElement("option");
+            optionMaterial.value = idProduto;
+            optionMaterial.textContent = idProduto;
+            if (selected != "") {
+                if (idProduto == selected) {
+                    optionMaterial.selected = true;
+                }
+            }
+            select.appendChild(optionMaterial);
+        });
+    }
+    catch {
+        pErro.textContent = "Falha em listar materiais. Por favor tente novamente.";
+    }
 }
 
 async function removeMaterial() {
@@ -339,7 +380,7 @@ async function removeMaterial() {
     await deleteDoc(docRef);
 
     popup.style.display = "none";
-    listarMateriais();
+    listarSelectMaterial(document.getElementById("selectPopUp"));
 }
 
 async function editMaterial() {
@@ -370,5 +411,5 @@ async function editMaterial() {
     });
 
     popup.style.display = "none";
-    listarMateriais();
+    listarSelectMaterial(document.getElementById("selectPopUp"));
 }
