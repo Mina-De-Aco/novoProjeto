@@ -2,6 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase
 import { getFirestore, doc, collection, getDocs, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
+import * as XLSX from "xlsx";
+
 const firebaseConfig = {
     apiKey: "AIzaSyDvFEYjg3aTANQDyZv8o5wxN-JHd1iAKpo",
     authDomain: "minadeaco-c2041.firebaseapp.com",
@@ -421,3 +423,28 @@ async function editMaterial() {
     popup.style.display = "none";
     listarSelectMaterial(document.getElementById("selectPopUp"));
 }
+
+function exportTableToExcel(tableId, fileName = "tabela.xlsx") {
+    // Encontre a tabela pelo ID
+    const table = document.getElementById(tableId);
+  
+    if (!table) {
+      console.error("Tabela não encontrada!");
+      return;
+    }
+  
+    // Converta a tabela em uma planilha
+    const worksheet = XLSX.utils.table_to_sheet(table);
+  
+    // Crie um novo workbook (arquivo Excel)
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  
+    // Exporte o arquivo
+    XLSX.writeFile(workbook, fileName);
+  }
+  
+  // Exemplo de uso
+  document.getElementById("exportTable").addEventListener("click", () => {
+    exportTableToExcel("excelTable");
+  });

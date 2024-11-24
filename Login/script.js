@@ -12,6 +12,29 @@ const firebaseConfig = {
     measurementId: "G-1XTP926TX1"
 };
 
+window.onload(async function () {
+    const email = "";
+    if (localStorage.getItem("email") == null) {
+        email = sessionStorage.getItem("email");
+    }
+    else {
+        email = localStorage.getItem("email"); F
+    }
+
+    const qC = query(collection(db, "Coletor"), where("email", "==", email));
+    const qF = query(collection(db, "Coletor"), where("email", "==", email));
+    const queryCSnapshot = await getDocs(qC);
+    const queryFSnapshot = await getDocs(qF);
+
+    if (queryCSnapshot.empty && queryFSnapshot.empty) {
+        window.location.href = "../cadastrar-produtos/index.html"
+    } else if (!queryCSnapshot.empty) {
+        window.location.href = "../PainelColetor/index.html"
+    } else {
+        window.location.href = "../EntreContato/index.html"
+    }
+})
+
 if (localStorage.getItem("email") != null || sessionStorage.getItem("email") != null) {
     testLogin();
 }
@@ -33,12 +56,16 @@ async function loginUser(email, senha) {
             localStorage.setItem("senha", senha);
         }
         else {
+            localStorage.setItem("email", null);
+            localStorage.setItem("senha", null);
+
+
             sessionStorage.setItem('email', email);
             sessionStorage.setItem('senha', senha);
         }
 
         const qC = query(collection(db, "Coletor"), where("email", "==", email));
-        const qF = query(collection(db, "Coletor"), where("email", "==", email));
+        const qF = query(collection(db, "Fornecedor"), where("email", "==", email));
         const queryCSnapshot = await getDocs(qC);
         const queryFSnapshot = await getDocs(qF);
 
@@ -47,7 +74,7 @@ async function loginUser(email, senha) {
             window.location.href = "../cadastrar-produtos/index.html"
         } else if (!queryCSnapshot.empty) {
             window.location.href = "../PainelColetor/index.html"
-        } else {
+        } else if (!queryFSnapshot.empty) {
             window.location.href = "../EntreContato/index.html"
         }
 
@@ -55,29 +82,6 @@ async function loginUser(email, senha) {
     } catch (e) {
         document.getElementById("errorMessageL").textContent = "Usuário ou senha incorreto/a"
         console.log(e)
-    }
-}
-
-async function testLogin() {
-    const email = "";
-    if (localStorage.getItem("email") == null) {
-        email = sessionStorage.getItem("email");
-    }
-    else {
-        email = localStorage.getItem("email");F
-    }
-
-    const qC = query(collection(db, "Coletor"), where("email", "==", email));
-    const qF = query(collection(db, "Coletor"), where("email", "==", email));
-    const queryCSnapshot = await getDocs(qC);
-    const queryFSnapshot = await getDocs(qF);
-
-    if (queryCSnapshot.empty && queryFSnapshot.empty) {
-        window.location.href = "../cadastrar-produtos/index.html"
-    } else if (!queryCSnapshot.empty) {
-        window.location.href = "../EntreContato/index.html"
-    } else {
-        window.location.href = "../PainelColetor/index.html"
     }
 }
 
